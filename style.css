@@ -413,8 +413,10 @@ img { max-width: 100%; display: block; }
 .scroll-indicator {
   position: absolute;
   bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -431,6 +433,7 @@ img { max-width: 100%; display: block; }
   border: 2px solid var(--text-muted);
   border-radius: 12px;
   position: relative;
+  box-sizing: border-box;
 }
 
 .mouse-wheel {
@@ -440,14 +443,13 @@ img { max-width: 100%; display: block; }
   border-radius: 2px;
   position: absolute;
   top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: calc(50% - 1.5px);
   animation: scroll-wheel 2s ease-in-out infinite;
 }
 
 @keyframes scroll-wheel {
-  0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  50% { opacity: 0.3; transform: translateX(-50%) translateY(10px); }
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.3; transform: translateY(10px); }
 }
 
 /* --- Sections --- */
@@ -781,6 +783,35 @@ img { max-width: 100%; display: block; }
   font-family: var(--font-mono);
   color: var(--accent-2);
   font-weight: 500;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-primary);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition);
+  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.25);
+}
+
+.project-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+}
+
+.project-link svg {
+  transition: transform var(--transition);
+}
+
+.project-link:hover svg {
+  transform: translate(2px, -2px);
 }
 
 /* --- Skills --- */
