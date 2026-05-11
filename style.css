@@ -163,6 +163,21 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
 }
 
+.nav-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-hover);
+}
+
+.nav-cta-outline:hover {
+  border-color: var(--accent-1);
+  color: var(--accent-1) !important;
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.2);
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
