@@ -9,9 +9,9 @@
   // --- Typing Effect ---
   const typingPhrases = [
     'Senior Software Engineer',
-    'Backend Architect',
+    'FinTech & Web3 Backend Architect',
     'Blockchain Developer',
-    'AI & Automation Builder',
+    'AI Agent & MCP Builder',
     'Cloud-Native Specialist',
   ];
 
@@ -172,4 +172,113 @@
       }
     });
   });
+
+  // --- Swipeable Project Cards (Tinder-style stack) ---
+  const stack = document.getElementById('projectStack');
+
+  if (stack) {
+    const cards = Array.from(stack.querySelectorAll('.project-card'));
+    const counter = document.getElementById('projectCounter');
+    const total = cards.length;
+    const SWIPE_THRESHOLD = 100; // px of horizontal drag that counts as a swipe
+    const FLY_MS = 350;
+    const order = cards.slice(); // order[0] is the card on top
+
+    stack.classList.add('is-stack');
+    document.getElementById('projectControls').hidden = false;
+
+    function layout() {
+      order.forEach((card, i) => {
+        card.inert = i !== 0; // only the top card is clickable / focusable
+        if ('flying' in card.dataset) return;
+        const depth = Math.min(i, 2);
+        card.style.zIndex = total - i;
+        card.style.transform = `translateY(${depth * 14}px) scale(${1 - depth * 0.05})`;
+        card.style.opacity = i <= 2 ? 1 : 0;
+      });
+      counter.textContent = `${cards.indexOf(order[0]) + 1} / ${total}`;
+    }
+
+    function flyOut(card, dir) {
+      card.style.zIndex = total + 1;
+      card.style.transform = `translateX(${dir * 130}%) rotate(${dir * 20}deg)`;
+      card.style.opacity = 0;
+    }
+
+    function next(dir) {
+      const top = order.shift();
+      order.push(top);
+      top.dataset.flying = '';
+      flyOut(top, dir);
+      layout();
+      setTimeout(() => {
+        delete top.dataset.flying;
+        layout();
+      }, FLY_MS);
+    }
+
+    function prev() {
+      const last = order.pop();
+      order.unshift(last);
+      delete last.dataset.flying;
+      last.style.transition = 'none';
+      flyOut(last, -1);
+      last.offsetWidth; // commit the off-screen start position so it animates in
+      last.style.transition = '';
+      layout();
+    }
+
+    // Drag: pointer capture starts only after a real horizontal move, so plain clicks on links still work
+    let startX = 0;
+    let dx = 0;
+    let dragging = false;
+    let moved = false;
+
+    stack.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || !order[0].contains(e.target)) return;
+      dragging = true;
+      moved = false;
+      dx = 0;
+      startX = e.clientX;
+    });
+
+    stack.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const top = order[0];
+      dx = e.clientX - startX;
+      if (!moved) {
+        if (Math.abs(dx) < 8) return;
+        moved = true;
+        top.classList.add('dragging');
+        top.setPointerCapture(e.pointerId);
+      }
+      top.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      order[0].classList.remove('dragging');
+      if (Math.abs(dx) > SWIPE_THRESHOLD) next(Math.sign(dx));
+      else layout();
+    }
+
+    stack.addEventListener('pointerup', endDrag);
+    stack.addEventListener('pointercancel', () => {
+      dx = 0; // browser took over (e.g. vertical scroll): snap back
+      endDrag();
+    });
+    stack.addEventListener('click', (e) => {
+      if (moved) {
+        e.preventDefault();
+        moved = false;
+      }
+    }, true);
+    stack.addEventListener('dragstart', (e) => e.preventDefault());
+
+    document.getElementById('projectNext').addEventListener('click', () => next(1));
+    document.getElementById('projectPrev').addEventListener('click', prev);
+
+    layout();
+  }
 })();
