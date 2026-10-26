@@ -830,6 +830,12 @@ img { max-width: 100%; display: block; }
   transform: translate(2px, -2px);
 }
 
+/* A card swiped right must not widen the page: on phones that re-lays out the whole viewport mid-swipe */
+#projects {
+  overflow-x: hidden; /* fallback for Safari < 16 */
+  overflow-x: clip;
+}
+
 /* Swipeable stack (enabled by script.js): every card shares one grid cell, so the stack is as tall as the tallest card */
 .projects-grid.is-stack {
   grid-template-columns: 1fr;
