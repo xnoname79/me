@@ -1114,18 +1114,21 @@ img { max-width: 100%; display: block; }
     top: var(--nav-height);
     left: 0;
     right: 0;
-    bottom: 0;
+    /* Explicit height: .nav's backdrop-filter makes it the containing block, so bottom: 0 collapsed the panel to 0px */
+    height: calc(100vh - var(--nav-height));
+    height: calc(100dvh - var(--nav-height));
     background: rgba(253, 252, 249, 0.98);
     backdrop-filter: blur(20px);
     flex-direction: column;
     justify-content: center;
     gap: 32px;
-    transform: translateX(100%);
-    transition: transform var(--transition);
+    /* Clipped in place rather than parked off-screen: iOS lets a left swipe drag the page out to an off-screen panel */
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path var(--transition);
   }
 
   .nav-links.open {
-    transform: translateX(0);
+    clip-path: inset(0);
   }
 
   .nav-links a {
